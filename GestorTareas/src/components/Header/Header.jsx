@@ -7,11 +7,9 @@ export const Header = () => {
           placeholder="Nombre tarea" 
           className="w-80 md:w-3/4 sm:w-3/3 p-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <input 
-          type="text" 
-          placeholder="Descripción tarea" 
-          className="w-80 md:w-3/4 sm:w-3/3 h-20 p-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <textarea  className="w-80 md:w-3/4 sm:w-3/3 h-20 p-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+         name="" id=""></textarea>
+
         <button className=" mt-3 w-80 md:w-3/4 sm:w-3/3 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium">
           Add Task
         </button>
