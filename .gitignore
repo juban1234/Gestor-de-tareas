@@ -1,0 +1,14 @@
+# Ignorar archivos de configuración de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar directorios de dependencias
+node_modules/
+vendor/
+
+# Ignorar archivos de compilación
+*.log
+*.tmp
+
+# Ignorar archivos de configuración de Visual Studio Code
+.vscode/
