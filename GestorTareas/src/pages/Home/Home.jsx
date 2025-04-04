@@ -1,66 +1,68 @@
-import { useState } from "react"
-import { Card } from "../../components/Card/Card";
+import { useContext, useState } from "react";
+import { TaskContext } from "../../components/Context/Context";
+import { TaskCard } from "../../components/TaskCard/TaskCard";
 
-export const Home = () => {
+const Home = () => {
+  const { tasks, addTask, deleteTask, editTask } = useContext(TaskContext);
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [editingId, setEditingId] = useState(null); // Para saber si estamos editando
 
-  const [task,setTask] = useState({title:'', description:''})
-  const [ListTask,setListTask] = useState([]);
+  const handleAddOrEditTask = () => {
+    if (taskName.trim() === "") return;
 
-  const addTask = (e)=>{
-    e.preventDefault()
-    if (!task.title.trim() || !task.description.trim()) return
-
-    const newTask ={
-      id: Date.now(),
-      title: task.title,
-      description :task.description,
-      completed: false
+    if (editingId) {
+      // Editar tarea existente
+      editTask(editingId, { name: taskName, description: taskDescription });
+      setEditingId(null);
+    } else {
+      // Agregar nueva tarea
+      addTask({ id: Date.now(), name: taskName, description: taskDescription, completed: false });
     }
 
-    setListTask([...ListTask,newTask])
-    setTask({title:'',description:''})
-  }
+    setTaskName("");
+    setTaskDescription("");
+  };
 
-  const deleteTask = (id) =>{
-    setListTask(ListTask.filter(task => task.id !==id))
-  }
+  const handleEditClick = (task) => {
+    setTaskName(task.name);
+    setTaskDescription(task.description);
+    setEditingId(task.id);
+  };
 
   return (
-    <header className="flex flex-col items-center justify-center">
-      <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg ">
-        <h1 className="text-2xl font-bold text-center mb-4">To-Do List</h1>
+    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 className="text-2xl font-bold text-center mb-4">To-Do List</h1>
 
-        <form onSubmit={addTask} className="mb-4">
+      <input
+        type="text"
+        value={taskName}
+        onChange={(e) => setTaskName(e.target.value)}
+        placeholder="Hacer ejercicio"
+        className="w-full p-2 mb-2 border border-gray-300 rounded-md"
+      />
 
-        <input
-          type="text"
-          placeholder="Hacer ejercicio"
-          value={task.title}
-          onChange={(e) => setTask({...task,title:e.target.value})}
-          className="w-full p-2 border rounded-md mb-2"
-        />
-        <textarea
-          placeholder="Description"
-          value={task.description}
-          onChange={(e) => setTask({...task,description:e.target.value})}
-          className="w-full p-2 border rounded-md mb-4 h-20"
-        ></textarea>
-        
-        {/* Add Task Button */}
-        <button className="w-full bg-blue-600 text-white py-2 rounded-md mb-4 hover:bg-blue-700">
-          Add Task
-        </button>
-        </form>
+      <textarea
+        value={taskDescription}
+        onChange={(e) => setTaskDescription(e.target.value)}
+        placeholder="Descripción"
+        className="w-full p-2 mb-2 border border-gray-300 rounded-md"
+      ></textarea>
 
-        <div className="flex justify-between mb-4">
-          <button className="px-4 py-2 border rounded-md">All</button>
-          <button className="px-4 py-2 border rounded-md">Pending</button>
-          <button className="px-4 py-2 border rounded-md">Completed</button>
-        </div>
-        
-        <Card/>
+      <button
+        onClick={handleAddOrEditTask}
+        className={`w-full py-2 rounded-md ${editingId ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+      >
+        {editingId ? "Guardar Cambios" : "Agregar Tarea"}
+      </button>
 
+      <div className="mt-4 space-y-2">
+        {tasks.map((task) => (
+          <TaskCard key={task.id} task={task} onDelete={deleteTask} onEdit={handleEditClick} />
+        ))}
       </div>
-    </header>
-  )
-}
+    </div>
+  );
+};
+
+export default Home;

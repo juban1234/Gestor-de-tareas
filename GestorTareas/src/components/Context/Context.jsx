@@ -1,41 +1,28 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState } from "react";
 
-const CardContext = createContext();
+
+export const TaskContext  = createContext();
 
 export const Context = ({ children }) => {
+  const [tasks, setTasks] = useState([]);
 
-  const [cards, setCards] = useState([]);
-  const [imput, setImput] = useState("")
-
-  const addCard = () => {
-    const newCard = {
-      title: imput,
-      description: 'Descripción de la tarjeta',
-    };
-    setCards([...cards, newCard]);
-    setImput('')
+  const addTask = (task) => {
+    setTasks([...tasks, task]);
   };
 
+  // Función para eliminar una tarea
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  const editTask = (id, updatedTask) => {
+    setTasks(tasks.map(task => (task.id === id ? { ...task, ...updatedTask } : task)));
+  };
+  
+
   return (
-
-    <div>
-        <input type="text"         
-        value={imput}
-        onChange={(e) => setImput(e.target.value)}
-        placeholder='nombre usuario' />
-
-
-      <button onClick={addCard}>Agregar tarjeta</button>
-
-      <div>
-        {cards.map((card, index) => (
-          <div key={index} className="card">
-            <h3>{card.title}</h3>
-            <p>{card.description}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    <TaskContext.Provider value={{ tasks, addTask, deleteTask ,editTask}}>
+      {children}
+    </TaskContext.Provider>
   );
-}
-
+};
